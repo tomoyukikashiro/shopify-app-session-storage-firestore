@@ -63,5 +63,6 @@
   "files": [
     "build",
     "LICENSE"
-  ]
+  ],
+  "version": "1.0.0"
 }
