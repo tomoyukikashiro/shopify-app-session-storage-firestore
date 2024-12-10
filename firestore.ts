@@ -1,9 +1,9 @@
 import { Session, type SessionParams } from "@shopify/shopify-api";
 import { type SessionStorage } from "@shopify/shopify-app-session-storage";
 import {
-  Timestamp,
   type DocumentData,
   type Firestore,
+  Timestamp,
 } from "firebase-admin/firestore";
 
 type SessionFirestore = Omit<SessionParams, "expires"> & {
@@ -20,8 +20,8 @@ const fromSession = (session: Session): SessionFirestore => {
 };
 
 const fromFirestore = (documentData: DocumentData): Session => {
-  const { expires, ...rest } = documentData as SessionFirestore;
-  const data: SessionParams = { ...rest };
+  const { expires, ...rest } = documentData satisfies SessionFirestore;
+  const data = { ...rest } as SessionParams;
   if (expires != null) {
     data.expires = expires.toDate();
   }
