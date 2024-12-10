@@ -1,0 +1,12 @@
+{
+  "tasks": {
+    "test": "firebase emulators:exec --only firestore 'cross-env FIRESTORE_EMULATOR_HOST=localhost:8000 deno test --allow-all __tests__/firestore.ts'",
+    "lint": "deno lint ./*.ts __tests__/",
+    "format": "deno fmt ./*.ts __tests__/",
+    "build": "deno run -A ./build_npm.ts"
+  },
+  "imports": {
+    "@std/expect": "jsr:@std/expect@^1.0.9",
+    "@std/testing": "jsr:@std/testing@^1.0.6"
+  }
+}

@@ -1,18 +1,22 @@
+// deno-lint-ignore-file no-explicit-any
 // copy from https://github.com/Shopify/shopify-app-js/blob/d9b361f4dfc6faa5ba9a87fd461e6160e382c9ae/packages/shopify-app-session-storage-test-utils/src/battery-of-tests.ts
 
 import { Session } from "@shopify/shopify-api";
 import { type SessionStorage } from "@shopify/shopify-app-session-storage";
 
-import { sessionArraysEqual } from "./session-arrays-equal";
+import { sessionArraysEqual } from "./session-arrays-equal.ts";
+
+import { it } from "jsr:@std/testing/bdd";
+import { expect } from "@std/expect";
 
 const testScopes = ["test_scope"];
 
 export function batteryOfTests(
-  storageFactory: () => Promise<SessionStorage>,
+  storageFactory: () => SessionStorage,
 ): void {
   it("can store and delete all kinds of sessions", async () => {
     const sessionFactories = [
-      async () => {
+      () => {
         return new Session({
           id: sessionId,
           shop: "shop",
@@ -22,7 +26,7 @@ export function batteryOfTests(
           accessToken: "123",
         });
       },
-      async () => {
+      () => {
         const expiryDate = new Date();
         expiryDate.setMilliseconds(0);
         expiryDate.setMinutes(expiryDate.getMinutes() + 60);
@@ -36,7 +40,7 @@ export function batteryOfTests(
           scope: testScopes.toString(),
         });
       },
-      async () => {
+      () => {
         return new Session({
           id: sessionId,
           shop: "shop",
@@ -47,7 +51,7 @@ export function batteryOfTests(
           accessToken: "123",
         });
       },
-      async () => {
+      () => {
         return new Session({
           id: sessionId,
           shop: "shop",
@@ -58,7 +62,7 @@ export function batteryOfTests(
           accessToken: "123",
         });
       },
-      async () => {
+      () => {
         return new Session({
           id: sessionId,
           shop: "shop",
@@ -72,9 +76,9 @@ export function batteryOfTests(
     ];
 
     const sessionId = "test_session";
-    const storage = await storageFactory();
+    const storage = storageFactory();
     for (const factory of sessionFactories) {
-      const session = await factory();
+      const session = factory();
 
       await expect(storage.storeSession(session)).resolves.toBeTruthy();
       const storedSession = await storage.loadSession(sessionId);
@@ -91,7 +95,7 @@ export function batteryOfTests(
   });
 
   it("can store sessions with unexpected fields", async () => {
-    const storage = await storageFactory();
+    const storage = storageFactory();
     const sessionId = "test_session";
     const session = new Session({
       id: sessionId,
@@ -107,7 +111,7 @@ export function batteryOfTests(
   });
 
   it("can store and delete sessions with online tokens", async () => {
-    const storage = await storageFactory();
+    const storage = storageFactory();
     const sessionId = "test_session";
     const session = new Session({
       id: sessionId,
@@ -122,14 +126,14 @@ export function batteryOfTests(
   });
 
   it("wrong ids return null sessions", async () => {
-    const storage = await storageFactory();
+    const storage = storageFactory();
     await expect(
       storage.loadSession("not_a_session_id"),
     ).resolves.toBeUndefined();
   });
 
   it("can find all the sessions for a given shop", async () => {
-    const storage = await storageFactory();
+    const storage = storageFactory();
     const prefix = "find_sessions";
     const sessions = [
       new Session({
@@ -179,7 +183,7 @@ export function batteryOfTests(
   });
 
   it("can delete the sessions for a given array of ids", async () => {
-    const storage = await storageFactory();
+    const storage = storageFactory();
     const prefix = "delete_sessions";
     const sessions = [
       new Session({
@@ -232,7 +236,7 @@ export function batteryOfTests(
   });
 
   it("can store sessions with scope longer than 255 chars", async () => {
-    const storage = await storageFactory();
+    const storage = storageFactory();
     const sessionId = "test_session";
     const session = new Session({
       id: sessionId,
