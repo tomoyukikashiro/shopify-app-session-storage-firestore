@@ -1,4 +1,5 @@
 {
+  "version": "1.0.0",
   "devDependencies": {
     "@shopify/shopify-api": "^11.6.1",
     "@shopify/shopify-app-session-storage": "^3.0.9",
